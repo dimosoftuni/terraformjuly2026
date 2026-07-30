@@ -3,7 +3,14 @@ name: 'Terraform Test'
 on:
   push:
     branches: [ "main" ]
-    
+
+env:
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
 jobs:
   terraform-test:
     runs-on: ubuntu-latest
@@ -14,6 +21,11 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Terraform Init
       run: terraform init
